@@ -107,7 +107,7 @@ def main():
             selected = np.random.choice(np.argsort(confidences)[-5:])
             grasp = grasps[kept_indices[selected]][0]
 
-            success, err = executor.execute_grasp(grasp)
+            err = executor.execute_grasp_fixed(grasp)
 
             if err:
                 executor.widowx.move_to_reset()
@@ -118,16 +118,16 @@ def main():
 
             if args.save:
                 executor.save_sample(sample_id)
-
+            
+            executor.widowx.move_to_reset()
+            success = executor.evaluate_grasp(manual=False)
             print('Success: %r' % success)
 
             if success:
                 # angle = [-1.57, 1.57][np.random.random() > .5]
                 # executor.widowx.move_to_drop(angle)
-                executor.widowx.move_to_reset()
                 executor.widowx.open_gripper(drop=True)
             else:
-                executor.widowx.move_to_reset()
                 executor.widowx.open_gripper(drop=True)
 
             executor.widowx.move_to_neutral()

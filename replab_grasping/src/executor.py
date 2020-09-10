@@ -215,6 +215,54 @@ class Executor:
             traceback.print_exc(e)
             return False, 1
 
+
+    def execute_grasp_fixed(self, grasp, manual_label=False):
+        try:
+            x, y, z, theta = grasp
+
+            print('Attempting grasp: (%.4f, %.4f, %.4f, %.4f)'
+                  % (x, y, z, theta))
+
+            self.sample['attempted_parameters'] = grasp
+
+            self.sample['before_img'] = self.get_rgbd()
+            self.before = self.sample['before_img']
+
+            assert inside_polygon(
+                (x, y, z), END_EFFECTOR_BOUNDS), 'Grasp not in bounds'
+
+            assert self.widowx.orient_to_pregrasp(
+                x, y), 'Failed to orient to target'
+
+            assert self.widowx.move_to_grasp(x, y, PRELIFT_HEIGHT, theta), \
+                'Failed to reach pre-lift pose'
+
+            assert self.widowx.move_to_grasp(
+                x, y, z, theta), 'Failed to execute grasp'
+
+            self.sample['pose'] = self.get_pose()
+            self.sample['joints'] = self.widowx.get_joint_values()
+
+            self.widowx.close_gripper()
+
+            reached = self.widowx.move_to_vertical(PRELIFT_HEIGHT)
+
+            assert self.widowx.move_to_drop(), 'Failed to move to drop'
+
+            rospy.sleep(2)
+
+            self.sample['after_img'] = self.get_rgbd()
+            self.after = self.sample['after_img']
+
+            #success = self.evaluate_grasp(manual=manual_label)
+            self.sample['gripper_closure'] = self.widowx.eval_grasp()[1]
+
+            return 0
+
+        except Exception as e:
+            print('Error executing grasp -- returning...')
+            traceback.print_exc(e)
+            return 1
     def calculate_crop(self, grasp):
         grasp = np.concatenate([grasp, [1.]], axis=0)
         transformedPoint = np.dot(self.inv_cm, grasp)
