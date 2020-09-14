@@ -35,7 +35,6 @@
 	--privileged \
 	ravehbs/replab_technion_realsense_d435:init
 	 
-	 
 	 maybe add this flag:  -v /$HOME/.X11-unix/:/root/.X11-unix:rw \ 
 	
 	pay attention: the differnce is the video2 part, and no --rm. this "connects" the dev/video2 of the host computer the the docker
@@ -73,11 +72,14 @@ in config.py - change the Z_OFFSET from 0.4 to 0.1.
 	
 	training command:
 	python train.py --resultpath ../../training_data/100920_2/results/ --datapath ../../training_data/100920_2/ --weight_decay 1
+<<<<<<< HEAD
 
 	n. training data has damaged files, we deleted them and added code to skip the deleted files.
 		48527.npy
 		14930.npy
 		
+=======
+>>>>>>> 48636aeee6c89746c53f53539e27e2e382a81269
 	
 
 2. physical assembly tips:
@@ -121,3 +123,7 @@ calculate control noise coeffs again? use a loop to recalculate the coeffs until
 create movement planning so the robot doesn,t touch the arena bounds.
 calibration of the Z_OFFSET
 improving automatic success assesment for a grasp.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 48636aeee6c89746c53f53539e27e2e382a81269
