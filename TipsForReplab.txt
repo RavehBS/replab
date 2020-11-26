@@ -1,0 +1,129 @@
+1. software:
+	a. use getting started guide from here:
+	https://learn.trossenrobotics.com/arbotix/arbotix-quick-start.html
+
+	a. note that the FTDI is likely working, and does not need to install.
+	run the following command: ls /dev | grep ttyU
+	output should be: ttyUSB0
+
+	b. when running the arduino IDE use sudo, or else the 'Tools->Serial Port' will be grayed out.
+
+	c.When trying to upload a sketch (for example the blink sketch) and getting this error: "libusb-0.1.so.4: cannot open shared object file: No such file or directory"
+	to fix you need to install a usb library with this command: sudo apt-get install libusb-0.1-4
+	
+	d. installation of realsense 2.0 is needed. step 1 and 2 on method 2 should be done on the following link:
+	https://github.com/IntelRealSense/realsense-ros
+	
+	e. on the host, give permition to docker to access display:
+					xhost +local:docker
+	
+	e.
+	when invoking docker use this cmd: 
+	docker run \
+	--runtime=nvidia \
+	-e NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility \
+	-e NVIDIA_VISIBLE_DEVICES=all -it \
+	-e DISPLAY=$DISPLAY \
+	-v /$HOME/.X11-unix/:/root/.X11-unix:rw \
+	--net=host \
+	--env="DISPLAY" \
+	--volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
+	--volume="/home/user_101/Public/replab_full_dataset:/root/ros_ws/src/replab/training_data/replab_full_dataset/" \
+	--device=/dev/video0 --device=/dev/video1 --device=/dev/video2 \
+	--device=/dev/ttyUSB0 \
+	--ipc=host \
+	--privileged \
+	ravehbs/replab_technion_realsense_d435:init
+	 
+	 maybe add this flag:  -v /$HOME/.X11-unix/:/root/.X11-unix:rw \ 
+	
+	pay attention: the differnce is the video2 part, and no --rm. this "connects" the dev/video2 of the host computer the the docker
+	
+	f. when using cam_align.py define cameraA on /dev/video2:
+	
+	python cam_align.py --cameraA /dev/video2 --ref_image reference_020920.jpg
+	
+	g. Connect the camera to the USB ports at the back of the computer. the front ones have issues.
+	
+	h. Change the topic name in:
+	/root/ros_ws/src/replab/replab_core/src/replab_core/commander_human.py
+	
+	line 202:
+	    gui = ClickWindow("/camera/color/image_raw","sr300_img_clickpoints", bgr_to_rgb)
+	    
+	i.
+	change start.sh script to use rs_rgbd.launch as a launch file for the camera
+ 	
+	j.
+	in /root/ros_ws/src/replab/replab_core/src/replab_core/compute_control_noise.py
+	x, _, _, _ = np.linalg.lstsq(targets, actual, rcond=-1)
+
+	k.
+	We added new functions to the controller, one them is calibration_positions (and its subroutine move_to_joint_values().
+
+	l.
+in config.py - change the Z_OFFSET from 0.4 to 0.1.
+
+
+	m. before running command_human run these lines in host:
+	sudo rmmod uvcvideo
+	sudo modprobe uvcvideo nodrop=1 timeout=5000
+	
+	
+	training command:
+	python train.py --resultpath ../../training_data/100920_2/results/ --datapath ../../training_data/100920_2/ --weight_decay 1
+<<<<<<< HEAD
+
+	n. training data has damaged files, we deleted them and added code to skip the deleted files.
+		48527.npy
+		14930.npy
+		
+=======
+>>>>>>> 48636aeee6c89746c53f53539e27e2e382a81269
+	
+
+2. physical assembly tips:
+	a. servo alignment:
+		i. make sure the horns are alined to the servo while assembling (the dot on the horn aligned to the notch on the servo)
+		ii.make sure that when connecting parts to the horn, the servo horn is alingned (single dot facing the top of the servo)
+		
+	b. testing:before connecting the arm to the cage, run the test in here:
+	https://learn.trossenrobotics.com/18-interbotix/robot-arms/widowx-robot-arm/27-widowx-robot-arm-build-check.html
+	Make sure that the arm is performing the exact same movements, with the same posture.
+	
+	c. make sure to peel all the stickers.
+	
+	d.mark the front of the base (we marked with tape) and make sure all installations are done according to the required orientation in relation to the front.
+
+
+next time starting point:
+image: rave:020920_latest
+We were trying to backup the code in github.
+Z_OFFSET in conifg to 0.1
+recalibrate. use the controller function widowx.p() to set calibration positions.
+
+
+Decide what to do from now on.
+
+shells:
+sh start.sh
+python commander_human.py
+python calibrate.py
+controller
+
+
+TODO:
+comment our code changes
+train with bahyang dataset
+evaluate with this dataset
+
+
+optional:
+calculate control noise coeffs again? use a loop to recalculate the coeffs untill they converge(?).
+create movement planning so the robot doesn,t touch the arena bounds.
+calibration of the Z_OFFSET
+improving automatic success assesment for a grasp.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 48636aeee6c89746c53f53539e27e2e382a81269
