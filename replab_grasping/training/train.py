@@ -1,6 +1,8 @@
 from __future__ import print_function, division
 
 import argparse
+import os.path
+from os import path
 import h5py
 import numpy as np
 import torch
@@ -194,9 +196,14 @@ def main(batch_size, epochs, lr, ignore_grasp, crop_radius, method,
     if start > 0:
         model.load_state_dict(torch.load(
             resultpath + '/model-epoch-%d.th' % (start - 1)))
-        optimizer = optim.Adam(model.parameters(), lr=current_lr)
-        optimizer.load_state_dict(torch.load(
-            resultpath + '/optimizer-epoch-%d.th' % (start - 1)))
+	#omer&rave: default optimer in case no optimzer state is given
+	path_to_check = str(resultpath + '/optimizer-epoch-'+str(start - 1) +'.th')
+	if not path.exists(path_to_check):
+		optimizer = optim.Adam(model.parameters(), lr=current_lr)
+	else:
+		optimizer = optim.Adam(model.parameters(), lr=current_lr)
+		optimizer.load_state_dict(torch.load(
+			resultpath + '/optimizer-epoch-%d.th' % (start - 1)))
     else:
         optimizer = optim.Adam(model.parameters(), lr=current_lr)
 
