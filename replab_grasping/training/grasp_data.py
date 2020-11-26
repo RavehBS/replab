@@ -149,7 +149,12 @@ class StandardData(Dataset):
         self.successes = []
 
         for i in range(total_samples):
+            #if i == 48527:
+            #    continue
             if len(valid_mask) == 0 or valid_mask[i]:
+                filePath = path + 'before/' + str(i) + '.npy'
+                if os.path.isfile(filePath) == False:
+                    continue       
                 self.rgbd.append(path + 'before/' + str(i) + '.npy')
                 self.grasps.append(grasps[i])
                 self.successes.append(successes[i])
@@ -158,7 +163,11 @@ class StandardData(Dataset):
         self.resize_depth = make_resize(227, 227)
 
     def __getitem__(self, index):
-        img = np.load(self.rgbd[index])
+        try:
+            img = np.load(self.rgbd[index])
+        except:
+            print('bad file:',self.rgbd[index])
+            return (-1,-1,-1),-1
         rgb, depth = img[:, :, :3], img[:, :, 3]
         grasp = torch.tensor(self.grasps[index], dtype=torch.float)
         success = int(self.successes[index])

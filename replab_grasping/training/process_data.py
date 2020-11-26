@@ -10,8 +10,7 @@ import cv2
 def main():
     fileList = []
     counter = 0
-    paths = ['/root/ros_ws/src/replab/training_data/100920_2/',
-             '/root/ros_ws/src/replab/training_data/191120_0/'] # list data directories here
+    paths = ['/root/ros_ws/src/replab/training_data/100920_2/'] # list data directories here
     for path in paths:
         for f in os.listdir(path):
             if f[-5:] == '.hdf5':
@@ -57,13 +56,12 @@ def main():
                 print('Skipping')
                 continue
 
-
-    np.save(paths[1]+'grasps', np.array(grasps))
-    np.save(paths[1]+'successes', np.array(successes))
-    np.save(paths[1]+'angles', np.array(angles))
-    np.save(paths[1]+'filelist', np.array(fileList))
-    np.save(paths[1]+'widths', np.array(widths))
-    np.save(paths[1]+'crops', np.array(crops))
+    np.save(paths[0]+'grasps', np.array(grasps))
+    np.save(paths[0]+'successes', np.array(successes))
+    np.save(paths[0]+'angles', np.array(angles))
+    np.save(paths[0]+'filelist', np.array(fileList))
+    np.save(paths[0]+'widths', np.array(widths))
+    np.save(paths[0]+'crops', np.array(crops))
     
 if __name__ == "__main__":
     main()
