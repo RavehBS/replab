@@ -385,7 +385,7 @@ class WidowX:
             print('Error executing grasp -- returning...')
             traceback.print_exc(e)
 
-    def p(self):
+    def calibration_positions(self):
         for j in range(5):
             for i in range(5):
                 self.execute_grasp([-0.14 + i*0.056,-0.14 + j*0.056,0.44,1.5])

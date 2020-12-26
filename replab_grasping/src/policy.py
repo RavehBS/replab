@@ -96,7 +96,9 @@ class Pinto2016(Policy):
     def __init__(self, model_path=None, heightmaps=False):
         self.net = PintoGuptaNet(depth=False, binned_output=True).cuda()
         self.net = nn.DataParallel(self.net).cuda()
-        self.net.load_state_dict(torch.load(model_path))
+        #self.net.load_state_dict(torch.load(model_path))
+        #Raveh&Omer: adding strict = false
+        self.net.load_state_dict(torch.load(model_path), strict=False)
         self.net.eval()
         self.resize = make_resize_rgb(227, 227)
 

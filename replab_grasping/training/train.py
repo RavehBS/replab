@@ -206,7 +206,8 @@ def main(batch_size, epochs, lr, ignore_grasp, crop_radius, method,
 			resultpath + '/optimizer-epoch-%d.th' % (start - 1)))
     else:
         optimizer = optim.Adam(model.parameters(), lr=current_lr)
-
+	
+    sumValAcc = 0
     for epoch in range(start, epochs + 1):
         if epoch % 50 == 0:
             current_lr /= 10
@@ -221,8 +222,10 @@ def main(batch_size, epochs, lr, ignore_grasp, crop_radius, method,
                    'optimizer-epoch-%d.th' % epoch)
         torch.save(model.state_dict(), resultpath +
                    'model-epoch-%d.th' % epoch)
-
+	sumValAcc = sumValAcc + val_acc*100
+	
     writer.close()
+    print ('Average val acc: {}%'.format(sumValAcc/(epochs+1)))
     print('Done')
 
 
