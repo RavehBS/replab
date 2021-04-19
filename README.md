@@ -1,3 +1,7 @@
+Below is the original README of the replab repository. Please refer to the "Replab-full-technical-report.pdf" for further infromation about the changes performed in this replab branch.
+The docker container we built for this branch is found at: https://hub.docker.com/repository/docker/ravehbs/replab_technion_realsense_d435
+
+####
 # REPLAB: A Reproducible Low-Cost Arm Benchmark for Robotic Learning
 ![Imgur](https://i.imgur.com/rf2tucH.jpg)
 This package contains the scripts used to operate a REPLAB cell. More details and the full paper can be found [here](https://sites.google.com/view/replab/).
